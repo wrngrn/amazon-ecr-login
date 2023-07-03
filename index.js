@@ -49,13 +49,14 @@ function configureProxy(httpProxy) {
   return null;
 }
 
-async function getEcrAuthTokenWrapper(authTokenRequest, httpsProxyAgent) {
+async function getEcrAuthTokenWrapper(authTokenRequest, httpsProxyAgent, useFipsEndpoint) {
   const ecrClient = new ECRClient({
     customUserAgent: ECR_LOGIN_GITHUB_ACTION_USER_AGENT,
     requestHandler: new NodeHttpHandler({
       httpAgent: httpsProxyAgent,
       httpsAgent: httpsProxyAgent
     }),
+    useFipsEndpoint: useFipsEndpoint,
   });
   const command = new GetAuthorizationTokenCommand(authTokenRequest);
   const authTokenResponse = await ecrClient.send(command);
@@ -70,13 +71,14 @@ async function getEcrAuthTokenWrapper(authTokenRequest, httpsProxyAgent) {
   return authTokenResponse;
 }
 
-async function getEcrPublicAuthTokenWrapper(authTokenRequest, httpsProxyAgent) {
+async function getEcrPublicAuthTokenWrapper(authTokenRequest, httpsProxyAgent, useFipsEndpoint) {
   const ecrPublicClient = new ECRPUBLICClient({
     customUserAgent: ECR_LOGIN_GITHUB_ACTION_USER_AGENT,
     requestHandler: new NodeHttpHandler({
       httpAgent: httpsProxyAgent,
       httpsAgent: httpsProxyAgent
     }),
+    useFipsEndpoint: useFipsEndpoint,
   });
   const command = new GetAuthorizationTokenCommandPublic(authTokenRequest);
   const authTokenResponse = await ecrPublicClient.send(command);
@@ -108,6 +110,7 @@ async function run() {
   const registries = core.getInput(INPUTS.registries, { required: false });
   const registryType = core.getInput(INPUTS.registryType, { required: false }).toLowerCase() || REGISTRY_TYPES.private;
   const httpProxy = core.getInput(INPUTS.httpProxy, { required: false });
+  const useFipsEndpoint = core.getInput(INPUTS.useFipsEndpoint, { required: false });
 
   const registryUriState = [];
 
@@ -130,8 +133,8 @@ async function run() {
       authTokenRequest.registryIds = registryIds;
     }
     const authTokenResponse = registryType === REGISTRY_TYPES.private ?
-      await getEcrAuthTokenWrapper(authTokenRequest, httpsProxyAgent) :
-      await getEcrPublicAuthTokenWrapper(authTokenRequest, httpsProxyAgent);
+      await getEcrAuthTokenWrapper(authTokenRequest, httpsProxyAgent,useFipsEndpoint) :
+      await getEcrPublicAuthTokenWrapper(authTokenRequest, httpsProxyAgent,useFipsEndpoint);
 
     // Login to each registry
     for (const authData of authTokenResponse.authorizationData) {
