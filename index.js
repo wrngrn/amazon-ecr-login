@@ -111,7 +111,7 @@ async function run() {
   const registries = core.getInput(INPUTS.registries, { required: false });
   const registryType = core.getInput(INPUTS.registryType, { required: false }).toLowerCase() || REGISTRY_TYPES.private;
   const httpProxy = core.getInput(INPUTS.httpProxy, { required: false });
-  const useFipsEndpoint = core.getInput(INPUTS.useFipsEndpoint, { required: false });
+  const useFipsEndpoint = core.getInput(INPUTS.useFipsEndpoint, { required: false }).toLowerCase() === 'true';
 
   const registryUriState = [];
 
@@ -119,6 +119,7 @@ async function run() {
     if (registryType !== REGISTRY_TYPES.private && registryType !== REGISTRY_TYPES.public) {
       throw new Error(`Invalid input for '${INPUTS.registryType}', possible options are [${REGISTRY_TYPES.private}, ${REGISTRY_TYPES.public}]`);
     }
+    core.info(`Fips endabled : ${useFipsEndpoint}`)
 
     // Configures proxy
     const httpsProxyAgent = configureProxy(httpProxy);
