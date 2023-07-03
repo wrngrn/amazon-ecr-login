@@ -119,7 +119,7 @@ async function run() {
     if (registryType !== REGISTRY_TYPES.private && registryType !== REGISTRY_TYPES.public) {
       throw new Error(`Invalid input for '${INPUTS.registryType}', possible options are [${REGISTRY_TYPES.private}, ${REGISTRY_TYPES.public}]`);
     }
-    core.info(`Fips endabled : ${useFipsEndpoint}`);
+
 
     // Configures proxy
     const httpsProxyAgent = configureProxy(httpProxy);
@@ -144,8 +144,8 @@ async function run() {
       const creds = authToken.split(':', 2);
       const proxyEndpoint = authData.proxyEndpoint;
       const registryUri = proxyEndpoint.replace(/^https?:\/\//, '');
-
-      core.info(`Logging into registry ${registryUri}`);
+      core.info(`Fips endabled : ${useFipsEndpoint}`);
+      core.info(`Loging into registry ${registryUri}`);
 
       // output the registry URI if this action is doing a single registry login
       if (authTokenResponse.authorizationData.length === 1) {
