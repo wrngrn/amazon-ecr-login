@@ -119,7 +119,7 @@ async function run() {
     if (registryType !== REGISTRY_TYPES.private && registryType !== REGISTRY_TYPES.public) {
       throw new Error(`Invalid input for '${INPUTS.registryType}', possible options are [${REGISTRY_TYPES.private}, ${REGISTRY_TYPES.public}]`);
     }
-    core.info(`Fips endabled : ${useFipsEndpoint}`)
+    core.info(`Fips endabled : ${useFipsEndpoint}`);
 
     // Configures proxy
     const httpsProxyAgent = configureProxy(httpProxy);
