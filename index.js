@@ -12,7 +12,8 @@ const INPUTS = {
   skipLogout: 'skip-logout',
   registries: 'registries',
   registryType: 'registry-type',
-  httpProxy: 'http-proxy'
+  httpProxy: 'http-proxy',
+  useFipsEndpoint: 'use-fips-endpoint'
 };
 
 const OUTPUTS = {
